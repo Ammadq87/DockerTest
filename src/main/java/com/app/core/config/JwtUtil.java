@@ -4,9 +4,11 @@ import com.app.core.models.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
@@ -16,7 +18,19 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private static final String JWT_SECRET = generateRandomKey();
+    private static byte[] JWT_SECRET;
+
+    @Value("${JWT_SECRET}")
+    private byte[] jwtSecretTemp;
+
+    @PostConstruct
+    public void init() {
+        JWT_SECRET = jwtSecretTemp;
+    }
+
+    public static byte[] getJwtSecret() {
+        return JWT_SECRET;
+    }
 
     public static String generateToken(String username,
                                        String name,
