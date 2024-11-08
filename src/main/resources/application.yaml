@@ -1,23 +1,24 @@
-
 spring:
-  session:
-    jdbc:
-      initialize-schema: always
   datasource:
-    url: jdbc:mysql://localhost:3306/Golazo?useSSL=false&serverTimezone=UTC
-    username: root
-    password: 1234
+    url: jdbc:mysql://${DEV_DB_USER}:${DEV_DB_PWD}@${DEV_DB_HOST}:${DEV_DB_PORT}/${DEV_DB_NAME}?useSSL=true
+    username: ${DEV_DB_USER}
+    password: ${DEV_DB_PWD}
+
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
       naming:
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: none
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
+  session:
+    jdbc:
+      initialize-schema: always
+
 server:
   port: 8080
   error:
