@@ -8,11 +8,14 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Date;
 
 public class JwtUtil {
-    private static final String SECRET_KEY = "4475354fc6ad9678d38bd8eebc23be8a37ca38e36e34a6d242ce6379ba00a3c7";
+
+    @Value("${JWT_SECRET}")
+    private static String JWT_SECRET;
 
     public static String generateToken(String username,
                                        String name,
@@ -27,13 +30,13 @@ public class JwtUtil {
                 .setSubject(name).setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .signWith(SignatureAlgorithm.HS256, JWT_SECRET)
                 .compact();
     }
 
     public static Claims parseToken(String token) {
         return Jwts.parser()
-                .setSigningKey(SECRET_KEY)
+                .setSigningKey(JWT_SECRET)
                 .parseClaimsJws(token)
                 .getBody();
     }
