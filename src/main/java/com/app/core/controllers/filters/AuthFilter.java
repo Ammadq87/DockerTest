@@ -20,6 +20,7 @@ public class AuthFilter implements Filter {
     private static final Logger log = LoggerFactory.getLogger(AuthFilter.class);
     private static final String LOGIN_ENDPOINT = "/login";
     private static final String REGISTER_ENDPOINT = "/register";
+    private static final JwtUtil jwtUtil = new JwtUtil();
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -53,6 +54,6 @@ public class AuthFilter implements Filter {
 
         String token = authorizationHeader.substring(7);
 
-        return !(token == null || JwtUtil.isTokenExpired(token));
+        return !(jwtUtil.isTokenExpired(token));
     }
 }

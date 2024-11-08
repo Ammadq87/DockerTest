@@ -2,17 +2,18 @@
   "properties": [
     {
       "name": "DEV_DB_PORT",
-      "type": "java.lang.String",
-      "description": "Description for DEV_DB_PORT."
+      "type": "java.lang.String"
     },
     {
       "name": "DEV_DB_HOST",
-      "type": "java.lang.String",
-      "description": "Description for DEV_DB_PORT."
+      "type": "java.lang.String"
     },
     {
       "name": "DEV_DB_NAME",
-      "type": "java.lang.String",
-      "description": "Description for DEV_DB_PORT."
+      "type": "java.lang.String"
+    },
+    {
+      "name": "JWT_SECRET",
+      "type": "java.lang.String"
     }
   ] }
