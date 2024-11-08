@@ -1,6 +1,5 @@
 package com.app.core.config;
 
-
 import com.app.core.models.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -8,14 +7,16 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.Date;
 
+@Component
 public class JwtUtil {
 
-    @Value("${JWT_SECRET}")
-    private static String JWT_SECRET;
+    private static final String JWT_SECRET = generateRandomKey();
 
     public static String generateToken(String username,
                                        String name,
@@ -42,6 +43,10 @@ public class JwtUtil {
     }
 
     public static Boolean isTokenExpired(String token) {
+        if (token == null || token.isEmpty()) {
+            return false;
+        }
+
         Claims claims = parseToken(token);
 
         if (claims == null)
@@ -52,7 +57,7 @@ public class JwtUtil {
     }
 
     public static String addJwtCookie(HttpServletResponse res, User user) {
-        String jwtToken = JwtUtil.generateToken(user.getUsername(), user.getName(), user.getEmail(), user.getId());
+        String jwtToken = generateToken(user.getUsername(), user.getName(), user.getEmail(), user.getId());
 
         Cookie cookie = new Cookie("token", jwtToken);
         cookie.setPath("/"); // cookie is available to all routes of the application
@@ -86,5 +91,16 @@ public class JwtUtil {
             }
         }
         return null;
+    }
+
+    public static String generateRandomKey() {
+        byte[] key = new byte[32];
+        SecureRandom secureRandom = new SecureRandom();
+        secureRandom.nextBytes(key);
+        return Base64.getEncoder().encodeToString(key);
+    }
+
+    public JwtUtil() {
+        // empty constructor
     }
 }
