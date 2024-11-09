@@ -12,8 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
-import java.util.Base64;
-import java.util.Date;
+import java.util.*;
 
 @Component
 public class JwtUtil {
@@ -41,12 +40,24 @@ public class JwtUtil {
                 .claim("name", name)
                 .claim("email", email)
                 .claim("username", username)
-                .claim("userID", userId)
+                .claim("userId", userId)
                 .setSubject(name).setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
                 .signWith(SignatureAlgorithm.HS256, JWT_SECRET)
                 .compact();
+    }
+
+    public static Claims parseJwt(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader("Authorization");
+
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return Jwts.claims();
+        }
+
+        String token = authorizationHeader.substring(7);
+
+        return parseToken(token);
     }
 
     public static Claims parseToken(String token) {

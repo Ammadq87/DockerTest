@@ -1,9 +1,6 @@
-package com.app.core.models;
+package com.app.core.models.follow;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
@@ -12,10 +9,10 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 @Entity
-@Table(name = "Following")
+@Table(name = "FollowPair")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Following implements Serializable {
+public class FollowPair implements Serializable {
     @Id private String id;
     @JoinColumn private String userA;
     @JoinColumn private String userB;
