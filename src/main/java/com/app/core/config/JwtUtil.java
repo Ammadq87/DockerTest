@@ -105,26 +105,6 @@ public class JwtUtil {
         }
     }
 
-    public static String getCookieByName(Cookie[] cookies, String name) {
-        if (cookies == null) {
-            return null;
-        }
-
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals(name)) {
-                return cookie.getValue();
-            }
-        }
-        return null;
-    }
-
-    public static String generateRandomKey() {
-        byte[] key = new byte[32];
-        SecureRandom secureRandom = new SecureRandom();
-        secureRandom.nextBytes(key);
-        return Base64.getEncoder().encodeToString(key);
-    }
-
     public JwtUtil() {
         // empty constructor
     }

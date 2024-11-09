@@ -26,7 +26,7 @@ public class FollowController {
 
     // GET
     @GetMapping("/following/{userId}")
-    public ResponseEntity<List<FollowerInfo>> getFollowing(@PathVariable String userId) throws AccountException {
+    public ResponseEntity<List<FollowerInfo>> getFollowing(@PathVariable String userId) {
         try {
             var followers = followService.getFollowers(userId);
             return new ResponseEntity<>(followers, HttpStatus.OK);
@@ -38,7 +38,7 @@ public class FollowController {
     }
 
     @GetMapping("/followers/{userId}")
-    public ResponseEntity<List<FollowerInfo>> getFollowers(@PathVariable String userId) throws AccountException {
+    public ResponseEntity<List<FollowerInfo>> getFollowers(@PathVariable String userId) {
         try {
             var following = followService.getFollowing(userId);
             return new ResponseEntity<>(following, HttpStatus.OK);

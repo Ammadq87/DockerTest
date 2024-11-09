@@ -1,6 +1,5 @@
 package com.app.core.services;
 
-import com.app.core.config.JwtUtil;
 import com.app.core.exceptions.AccountException;
 import com.app.core.models.follow.FollowPair;
 import com.app.core.models.follow.FollowerInfo;
@@ -10,11 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -25,12 +22,12 @@ public class FollowService {
     @Autowired
     public FollowService(FollowDAO followDAO) {this.followDAO = followDAO;}
 
-    public List<FollowerInfo> getFollowers(String userId) throws AccountException {
+    public List<FollowerInfo> getFollowers(String userId) {
         Utils.checkNull(userId, "Invalid or no userId provided", AccountException.class);
         return followDAO.getFollowers(userId);
     }
 
-    public List<FollowerInfo> getFollowing(String userId) throws AccountException {
+    public List<FollowerInfo> getFollowing(String userId) {
         Utils.checkNull(userId, "Invalid or no userId provided", AccountException.class);
         return followDAO.getFollowing(userId);
     }

@@ -24,10 +24,4 @@ public interface FollowDAO extends JpaRepository<FollowPair, Long> {
 
     @Query("SELECT F AS COUNT FROM FollowPair F WHERE F.userA = :userA AND F.userB = :userB")
     List<FollowPair> getFollowPair(@Param("userA") String userA, @Param("userB") String userB);
-
-    @Query("SELECT COUNT(*) AS FOLLOWERS FROM FollowPair f GROUP BY f.userB HAVING f.userB = :id")
-    int getFollowerCount(@Param("id") String id);
-
-    @Query("SELECT COUNT(*) AS Following FROM FollowPair f GROUP BY f.userA HAVING f.userA = :id")
-    int getFollowingCount(@Param("id") String id);
 }
