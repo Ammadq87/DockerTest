@@ -1,4 +1,4 @@
-package com.app.core.config;
+package com.app.core.utils;
 
 import com.app.core.exceptions.HashException;
 

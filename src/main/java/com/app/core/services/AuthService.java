@@ -1,6 +1,6 @@
 package com.app.core.services;
 
-import com.app.core.config.HashingUtil;
+import com.app.core.utils.HashingUtil;
 import com.app.core.exceptions.HashException;
 import com.app.core.models.User;
 import com.app.core.repositories.AuthDAO;
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.UUID;
 
 @Component
 @Slf4j
@@ -30,7 +29,6 @@ public class AuthService {
             }
 
             u.setPassword(HashingUtil.getHash(u.getPassword()));
-            u.setId(UUID.randomUUID().toString());
             u.setCreatedOn(LocalDateTime.now());
             u.setLastUpdated(LocalDateTime.now());
             authDAO.save(u);

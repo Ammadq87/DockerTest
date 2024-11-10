@@ -1,6 +1,6 @@
 package com.app.core.controllers.filters;
 
-import com.app.core.config.JwtUtil;
+import com.app.core.utils.JwtUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,7 +38,7 @@ public class AuthFilter implements Filter {
 
     }
 
-    private boolean validateToken(HttpServletRequest request) {
+    private static boolean validateToken(HttpServletRequest request) {
         List<String> doNotFilterEndpoints = List.of(LOGIN_ENDPOINT, REGISTER_ENDPOINT);
         String path = request.getRequestURI();
         Optional<String> endpoint = doNotFilterEndpoints.stream().filter(path::contains).findFirst();

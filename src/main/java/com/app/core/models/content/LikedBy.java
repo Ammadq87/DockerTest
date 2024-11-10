@@ -1,4 +1,4 @@
-package com.app.core.models;
+package com.app.core.models.content;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -9,16 +9,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
+import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "LikedBy")
 @Data
 @Builder
-@Entity
-@Table(name = "GoalStatus")
-@AllArgsConstructor
 @NoArgsConstructor
-public class GoalStatus implements Serializable {
-    @Id private String id;
+@AllArgsConstructor
+public class LikedBy {
+    @Id private int id;
     @JoinColumn private String username;
-    private String title;
+    @JoinColumn private String contentId;
+    private LocalDateTime likedOn;
 }

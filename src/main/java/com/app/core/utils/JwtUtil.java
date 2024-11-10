@@ -1,5 +1,6 @@
-package com.app.core.config;
+package com.app.core.utils;
 
+import com.app.core.exceptions.AccountException;
 import com.app.core.models.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -11,9 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.security.SecureRandom;
-import java.util.Base64;
-import java.util.Date;
+import java.util.*;
 
 @Component
 public class JwtUtil {
@@ -34,19 +33,29 @@ public class JwtUtil {
 
     public static String generateToken(String username,
                                        String name,
-                                       String email,
-                                       String userId) {
+                                       String email) {
         return Jwts.builder()
                 .setSubject(username)
                 .claim("name", name)
                 .claim("email", email)
                 .claim("username", username)
-                .claim("userID", userId)
                 .setSubject(name).setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
                 .signWith(SignatureAlgorithm.HS256, JWT_SECRET)
                 .compact();
+    }
+
+    public static Claims parseJwt(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader("Authorization");
+
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return Jwts.claims();
+        }
+
+        String token = authorizationHeader.substring(7);
+
+        return parseToken(token);
     }
 
     public static Claims parseToken(String token) {
@@ -71,7 +80,7 @@ public class JwtUtil {
     }
 
     public static String addJwtCookie(HttpServletResponse res, User user) {
-        String jwtToken = generateToken(user.getUsername(), user.getName(), user.getEmail(), user.getId());
+        String jwtToken = generateToken(user.getUsername(), user.getName(), user.getEmail());
 
         Cookie cookie = new Cookie("token", jwtToken);
         cookie.setPath("/"); // cookie is available to all routes of the application
@@ -94,24 +103,18 @@ public class JwtUtil {
         }
     }
 
-    public static String getCookieByName(Cookie[] cookies, String name) {
-        if (cookies == null) {
-            return null;
+    public static Object getAttributeFromToken(String attribute, HttpServletRequest request) throws AccountException {
+        var user = parseJwt(request);
+
+        if (user == null) {
+            throw new AccountException("Unauthorized Account");
         }
 
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals(name)) {
-                return cookie.getValue();
-            }
+        if (user.containsKey(attribute)) {
+            return user.get(attribute);
         }
-        return null;
-    }
 
-    public static String generateRandomKey() {
-        byte[] key = new byte[32];
-        SecureRandom secureRandom = new SecureRandom();
-        secureRandom.nextBytes(key);
-        return Base64.getEncoder().encodeToString(key);
+        throw new RuntimeException("Attribute does not exist");
     }
 
     public JwtUtil() {

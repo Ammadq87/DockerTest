@@ -11,8 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.app.core.config.JwtUtil.addJwtCookie;
-import static com.app.core.config.JwtUtil.clearCookies;
+import static com.app.core.utils.JwtUtil.addJwtCookie;
+import static com.app.core.utils.JwtUtil.clearCookies;
 
 @RestController
 @RequestMapping(path = "api/v1/auth")

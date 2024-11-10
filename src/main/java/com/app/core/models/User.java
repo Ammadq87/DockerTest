@@ -19,12 +19,16 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User implements Serializable {
-    @Id private String id;
+    @Id private String username;
     private String name;
-    private String username;
     private String email;
     private String password;
     private Date dateOfBirth;
     private LocalDateTime lastUpdated;
     private LocalDateTime createdOn;
+
+    public User(String name, String username) {
+        this.name = name;
+        this.username = username;
+    }
 }
