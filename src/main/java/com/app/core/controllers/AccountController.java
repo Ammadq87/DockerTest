@@ -19,14 +19,14 @@ public class AccountController {
     // GET
 
     /**
-     * Get account based on user ID
-     * @param id
+     *
+     * @param username
      * @return
      */
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getAccountInformation(@PathVariable String id) {
+    @GetMapping("/{username}")
+    public ResponseEntity<Object> getAccountInformation(@PathVariable String username) {
         try {
-            var user = accountService.getAccountInformation(id);
+            var user = accountService.getAccountInformation(username);
             return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (AccountException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);

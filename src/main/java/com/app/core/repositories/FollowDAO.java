@@ -11,17 +11,17 @@ import java.util.List;
 public interface FollowDAO extends JpaRepository<FollowPair, Long> {
 
     @Query("""
-        SELECT NEW com.app.core.models.follow.FollowerInfo(F.id, F.userB, B.name, B.username, B.email, B.dateOfBirth,
-        B.createdOn, F.followedOn) FROM FollowPair F INNER JOIN User B ON F.userB = B.id WHERE F.userB = :userId
+        SELECT NEW com.app.core.models.follow.FollowerInfo(F.followPairID.userB, B.name, B.username, B.email, B.dateOfBirth,
+        B.createdOn, F.followedOn) FROM FollowPair F INNER JOIN User B ON F.followPairID.userA = B.username WHERE F.followPairID.userB = :username
         """)
-    List<FollowerInfo> getFollowing(@Param("userId") String userId);
+    List<FollowerInfo> getFollowers(@Param("username") String username);
 
     @Query("""
-            SELECT NEW com.app.core.models.follow.FollowerInfo(F.id, F.userB, B.name, B.username, B.email, B.dateOfBirth,
-            B.createdOn, F.followedOn) FROM FollowPair F INNER JOIN User B ON F.userB = B.id WHERE F.userA = :userId
+            SELECT NEW com.app.core.models.follow.FollowerInfo(F.followPairID.userB, B.name, B.username, B.email, B.dateOfBirth,
+            B.createdOn, F.followedOn) FROM FollowPair F INNER JOIN User B ON F.followPairID.userB = B.username WHERE F.followPairID.userA = :username
             """)
-    List<FollowerInfo> getFollowers(@Param("userId") String userId);
+    List<FollowerInfo> getFollowing(@Param("username") String username);
 
-    @Query("SELECT F AS COUNT FROM FollowPair F WHERE F.userA = :userA AND F.userB = :userB")
+    @Query("SELECT F AS COUNT FROM FollowPair F WHERE F.followPairID.userA = :userA AND F.followPairID.userB = :userB")
     List<FollowPair> getFollowPair(@Param("userA") String userA, @Param("userB") String userB);
 }

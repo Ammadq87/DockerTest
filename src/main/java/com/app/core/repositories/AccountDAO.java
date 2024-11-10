@@ -17,7 +17,7 @@ public interface AccountDAO extends JpaRepository<User, String> {
     Optional<List<User>> findUserByUsername(@Param("username") String username);
 
     // Avoid revealing too much information on search since a lot of information is private
-    @Query("SELECT NEW com.app.core.models.User(u.id, u.name, u.username) FROM User u WHERE u.username LIKE %:param%")
+    @Query("SELECT NEW com.app.core.models.User(u.name, u.username) FROM User u WHERE u.username LIKE %:param%")
     Optional<List<User>> findAccountsBySearchParam(@Param("param") String param);
 
 }

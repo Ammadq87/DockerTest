@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Goal implements Serializable {
     @Id private String id;
-    @JoinColumn private String userId;
+    @JoinColumn private String username;
     private String title;
     private String subtitle;
     private String notes;

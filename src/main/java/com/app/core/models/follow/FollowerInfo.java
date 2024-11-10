@@ -15,7 +15,6 @@ import java.util.Date;
 @AllArgsConstructor
 public class FollowerInfo implements Serializable {
     private String followPairId;
-    private String userId;
     private String name;
     private String username;
     private String email;

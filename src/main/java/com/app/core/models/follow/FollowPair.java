@@ -13,8 +13,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FollowPair implements Serializable {
-    @Id private String id;
-    @JoinColumn private String userA;
-    @JoinColumn private String userB;
+    @EmbeddedId private FollowPairID followPairID;
     private LocalDateTime followedOn;
 }

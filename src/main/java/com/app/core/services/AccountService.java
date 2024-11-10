@@ -18,9 +18,9 @@ public class AccountService {
         this.accountDAO = accountDAO;
     }
 
-    public User getAccountInformation(String userId) throws AccountException {
+    public User getAccountInformation(String username) throws AccountException {
         // Maybe rework this to get all information like goals and following
-        Optional<User> user = accountDAO.findById(userId);
+        Optional<User> user = accountDAO.findById(username);
 
         if (user.isPresent()) {
             return user.get();
@@ -35,7 +35,7 @@ public class AccountService {
     }
 
     public void updateAccountInformation(User newUser) throws AccountException {
-        Optional<User> result = accountDAO.findById(newUser.getId());
+        Optional<User> result = accountDAO.findById(newUser.getUsername());
 
         if (result.isEmpty()) {
             throw new AccountException("User not found");

@@ -5,66 +5,46 @@ import com.app.core.models.follow.FollowPair;
 import com.app.core.models.follow.FollowerInfo;
 import com.app.core.repositories.FollowDAO;
 import com.app.core.utils.Utils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Component
+@Slf4j
 public class FollowService {
-    private static final Logger log = LoggerFactory.getLogger(FollowService.class);
     private final FollowDAO followDAO;
 
     @Autowired
     public FollowService(FollowDAO followDAO) {this.followDAO = followDAO;}
 
-    public List<FollowerInfo> getFollowers(String userId) {
-        Utils.checkNull(userId, "Invalid or no userId provided", AccountException.class);
-        return followDAO.getFollowers(userId);
+    public List<FollowerInfo> getFollowers(String username) {
+        Utils.checkNull(username, "Invalid or no username provided", AccountException.class);
+        return followDAO.getFollowers(username);
     }
 
-    public List<FollowerInfo> getFollowing(String userId) {
-        Utils.checkNull(userId, "Invalid or no userId provided", AccountException.class);
-        return followDAO.getFollowing(userId);
+    public List<FollowerInfo> getFollowing(String username) {
+        Utils.checkNull(username, "Invalid or no username provided", AccountException.class);
+        return followDAO.getFollowing(username);
     }
 
     public void followAccount(FollowPair followPair) throws AccountException {
         try {
 
-            if (isAlreadyFollowing(followPair)) {
-                log.debug("Already following {}", followPair.getUserB());
-                return;
+            List<FollowPair> list = followDAO.getFollowPair(followPair.getFollowPairID().getUserA(), followPair.getFollowPairID().getUserB());
+
+            if (!list.isEmpty()) {
+                followDAO.delete(list.getFirst());
+            } else {
+                followPair.setFollowedOn(LocalDateTime.now());
+                followDAO.save(followPair);
             }
 
-            followPair.setId(UUID.randomUUID().toString());
-            followPair.setFollowedOn(LocalDateTime.now());
-            followDAO.save(followPair);
+            log.debug("{} {}", list.isEmpty() ? "Followed: " : "Unfollowed: ", followPair.getFollowPairID().getUserB());
         } catch (RuntimeException e) {
             throw new AccountException("Error followPair account");
-        }
-    }
-
-    public void unfollowAccount(String userA, String userB) {
-
-        List<FollowPair> followPairs = followDAO.getFollowPair(userA, userB);
-
-        if (followPairs.isEmpty()) {
-            log.debug("Cannot unfollow, already not following {}", userB);
-        } else {
-            followDAO.delete(followPairs.getFirst());
-        }
-    }
-
-    private boolean isAlreadyFollowing(FollowPair followPair) {
-        try {
-            List<FollowPair> list = followDAO.getFollowPair(followPair.getUserA(), followPair.getUserB());
-            return list.isEmpty();
-        } catch (RuntimeException e) {
-            return false;
         }
     }
 }

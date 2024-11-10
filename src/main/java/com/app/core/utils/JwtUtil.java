@@ -1,5 +1,6 @@
-package com.app.core.config;
+package com.app.core.utils;
 
+import com.app.core.exceptions.AccountException;
 import com.app.core.models.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -11,7 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.security.SecureRandom;
 import java.util.*;
 
 @Component
@@ -33,14 +33,12 @@ public class JwtUtil {
 
     public static String generateToken(String username,
                                        String name,
-                                       String email,
-                                       String userId) {
+                                       String email) {
         return Jwts.builder()
                 .setSubject(username)
                 .claim("name", name)
                 .claim("email", email)
                 .claim("username", username)
-                .claim("userId", userId)
                 .setSubject(name).setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
@@ -82,7 +80,7 @@ public class JwtUtil {
     }
 
     public static String addJwtCookie(HttpServletResponse res, User user) {
-        String jwtToken = generateToken(user.getUsername(), user.getName(), user.getEmail(), user.getId());
+        String jwtToken = generateToken(user.getUsername(), user.getName(), user.getEmail());
 
         Cookie cookie = new Cookie("token", jwtToken);
         cookie.setPath("/"); // cookie is available to all routes of the application
@@ -103,6 +101,20 @@ public class JwtUtil {
             c.setPath("/");
             res.addCookie(c);
         }
+    }
+
+    public static Object getAttributeFromToken(String attribute, HttpServletRequest request) throws AccountException {
+        var user = parseJwt(request);
+
+        if (user == null) {
+            throw new AccountException("Unauthorized Account");
+        }
+
+        if (user.containsKey(attribute)) {
+            return user.get(attribute);
+        }
+
+        throw new RuntimeException("Attribute does not exist");
     }
 
     public JwtUtil() {
